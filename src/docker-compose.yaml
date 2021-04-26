@@ -1,0 +1,15 @@
+version: "3.9"
+services:
+  api:
+    build: .
+    ports:
+      - "5000:80"
+      - "5001:443"
+    environment:
+      - ASPNETCORE_URLS=http://+:80
+      - ASPNETCORE_ENVIRONMENT=Production
+    networks:
+      - glue
+
+networks:
+  glue:
