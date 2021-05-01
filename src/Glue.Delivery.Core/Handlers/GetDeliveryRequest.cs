@@ -3,7 +3,7 @@ using Glue.Delivery.Core.Domain;
 using Glue.Delivery.Core.Dto;
 using MediatR;
 
-namespace Glue.Delivery.Core
+namespace Glue.Delivery.Core.Handlers
 {
     public sealed class GetDeliveryRequest : IRequest<OperationResult<OrderDeliveryDto>>
     {

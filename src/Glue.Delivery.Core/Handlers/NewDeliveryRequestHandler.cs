@@ -8,7 +8,7 @@ using Glue.Delivery.Core.Stores;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
-namespace Glue.Delivery.Core
+namespace Glue.Delivery.Core.Handlers
 {
     public sealed class NewDeliveryRequestHandler :
         IRequestHandler<NewDeliveryRequest, OperationResult<OrderDeliveryDto>>

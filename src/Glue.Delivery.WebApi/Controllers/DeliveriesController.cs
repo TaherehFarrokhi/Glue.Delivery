@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Glue.Delivery.Core;
 using Glue.Delivery.Core.Domain;
 using Glue.Delivery.Core.Dto;
+using Glue.Delivery.Core.Handlers;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

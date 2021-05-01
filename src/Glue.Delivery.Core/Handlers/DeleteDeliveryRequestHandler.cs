@@ -7,7 +7,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-namespace Glue.Delivery.Core
+namespace Glue.Delivery.Core.Handlers
 {
     public sealed class DeleteDeliveryRequestHandler :
         IRequestHandler<DeleteDeliveryRequest, OperationResult<Unit>>

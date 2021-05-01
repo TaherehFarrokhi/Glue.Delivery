@@ -1,7 +1,10 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using AutoMapper;
+using Coravel;
+using Glue.Delivery.Core;
 using Glue.Delivery.Core.Dto;
+using Glue.Delivery.Core.Handlers;
 using Glue.Delivery.Core.Profiles;
 using Glue.Delivery.Core.Stores;
 using MediatR;
@@ -36,6 +39,7 @@ namespace Glue.Delivery.WebApi
             });
 
             services.AddMediatR(typeof(OrderDeliveryDto));
+            services.AddScheduler();
             services
                 .AddEntityFrameworkInMemoryDatabase()
                 .AddDbContext<DeliveryDbContext>(
@@ -55,6 +59,11 @@ namespace Glue.Delivery.WebApi
             app.UseRouting();
             app.UseAuthorization();
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+            app.ApplicationServices.UseScheduler(s =>
+            {
+                var mediator = app.ApplicationServices.GetRequiredService<IMediator>();
+                s.ScheduleAsync(() => mediator.Send(new ExpireDeliveryRequest())).EveryMinute();
+            });
         }
     }
 }

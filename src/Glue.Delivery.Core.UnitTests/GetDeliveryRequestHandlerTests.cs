@@ -7,6 +7,7 @@ using AutoMapper;
 using FluentAssertions;
 using Glue.Delivery.Core.Domain;
 using Glue.Delivery.Core.Dto;
+using Glue.Delivery.Core.Handlers;
 using Glue.Delivery.Core.Stores;
 using Microsoft.Extensions.Logging;
 using Moq;

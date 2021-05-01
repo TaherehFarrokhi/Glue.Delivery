@@ -2,7 +2,7 @@
 using Glue.Delivery.Core.Domain;
 using MediatR;
 
-namespace Glue.Delivery.Core
+namespace Glue.Delivery.Core.Handlers
 {
     public sealed class DeleteDeliveryRequest : IRequest<OperationResult<Unit>>
     {

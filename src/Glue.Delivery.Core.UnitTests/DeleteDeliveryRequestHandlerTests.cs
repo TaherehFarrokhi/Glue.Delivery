@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AutoFixture;
 using FluentAssertions;
 using Glue.Delivery.Core.Domain;
+using Glue.Delivery.Core.Handlers;
 using Glue.Delivery.Core.Stores;
 using Microsoft.Extensions.Logging;
 using Moq;
