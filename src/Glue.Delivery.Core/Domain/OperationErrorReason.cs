@@ -4,6 +4,6 @@
     {
         None,
         GenericError,
-        ResourceNotFound,
+        ResourceNotFound
     }
 }

@@ -8,12 +8,14 @@ namespace Glue.Delivery.Core.Stores
         public DeliveryDbContext()
         {
         }
-        
+
         public DeliveryDbContext(DbContextOptions<DeliveryDbContext> options)
             : base(options)
         {
         }
-        
+
+        public virtual DbSet<OrderDelivery> Deliveries { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<OrderDelivery>()
@@ -23,6 +25,5 @@ namespace Glue.Delivery.Core.Stores
             modelBuilder.Entity<OrderDelivery>().OwnsOne(m => m.AccessWindow);
             modelBuilder.Entity<OrderDelivery>().OwnsOne(m => m.Recipient);
         }
-        public virtual DbSet<OrderDelivery> Deliveries { get; set; }
     }
 }

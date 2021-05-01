@@ -9,8 +9,8 @@ using FluentAssertions;
 using Glue.Delivery.Core.Domain;
 using Glue.Delivery.Core.Dto;
 using Glue.Delivery.Core.Stores;
-using Microsoft.AspNetCore.Mvc.Testing;
 using Glue.Delivery.WebApi.IntegrationTests.Extensions;
+using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Xunit;
@@ -20,7 +20,7 @@ namespace Glue.Delivery.WebApi.IntegrationTests
     public class DeliveriesControllerTests : IClassFixture<ApplicationFactory>
     {
         private readonly WebApplicationFactory<Startup> _factory;
-        private readonly Fixture _fixture = new Fixture();
+        private readonly Fixture _fixture = new();
 
         public DeliveriesControllerTests(ApplicationFactory factory)
         {
@@ -70,7 +70,7 @@ namespace Glue.Delivery.WebApi.IntegrationTests
                 MediaTypeNames.Application.Json);
 
             // Act
-            var response = await client.PostAsync($"deliveries", httpContent);
+            var response = await client.PostAsync("deliveries", httpContent);
 
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.Created);
@@ -138,7 +138,8 @@ namespace Glue.Delivery.WebApi.IntegrationTests
             // Arrange
             var client = _factory.CreateClient();
             var updatedDelivery = _fixture.Create<DeliveryRequestDto>();
-            var httpContent = new StringContent(JsonConvert.SerializeObject(updatedDelivery), Encoding.UTF8, MediaTypeNames.Application.Json);
+            var httpContent = new StringContent(JsonConvert.SerializeObject(updatedDelivery), Encoding.UTF8,
+                MediaTypeNames.Application.Json);
 
             // Act
             var response = await client.PutAsync($"deliveries/{Guid.NewGuid()}", httpContent);
@@ -146,7 +147,7 @@ namespace Glue.Delivery.WebApi.IntegrationTests
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
         }
-        
+
         [Fact]
         public async Task Should_Delete_RemoveTheDelivery_WhenTheDeliveryIdIsValid()
         {
@@ -156,25 +157,25 @@ namespace Glue.Delivery.WebApi.IntegrationTests
             var context = _factory.Server.Services.GetRequiredService<DeliveryDbContext>();
             context.Add(delivery);
             await context.SaveChangesAsync();
-        
+
             // Act
             var response = await client.DeleteAsync($"deliveries/{delivery.DeliveryId}");
-        
+
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             var persisted = await context.Deliveries.FindAsync(delivery.DeliveryId);
             persisted.Should().BeNull();
-        }        
-        
+        }
+
         [Fact]
         public async Task Should_Delete_ReturnNotFound_WhenTheDeliveryIdIsNotValid()
         {
             // Arrange
             var client = _factory.CreateClient();
-        
+
             // Act
             var response = await client.DeleteAsync($"deliveries/{Guid.NewGuid()}");
-        
+
             // Assert
             response.IsSuccessStatusCode.Should().BeFalse();
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);

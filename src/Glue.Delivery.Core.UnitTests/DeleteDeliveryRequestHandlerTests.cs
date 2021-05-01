@@ -15,8 +15,8 @@ namespace Glue.Delivery.Core.UnitTests
 {
     public class DeleteDeliveryRequestHandlerTests
     {
-        private readonly Fixture _fixture = new Fixture();
-        
+        private readonly Fixture _fixture = new();
+
         [Fact]
         public async Task Should_Handle_ReturnTheDelivery_WhenTheDeliveryIdIsExist()
         {
@@ -25,16 +25,16 @@ namespace Glue.Delivery.Core.UnitTests
             var dbContext = new Mock<DeliveryDbContext>();
             dbContext.Setup(x => x.Deliveries).ReturnsDbSet(deliveries);
             var logger = new Mock<ILogger<DeleteDeliveryRequestHandler>>();
-            var sut = new DeleteDeliveryRequestHandler(dbContext.Object, logger.Object );
+            var sut = new DeleteDeliveryRequestHandler(dbContext.Object, logger.Object);
 
             // Act
-            var actual = await sut.Handle(new DeleteDeliveryRequest(deliveries.First().DeliveryId), CancellationToken.None);
-            
+            var actual = await sut.Handle(new DeleteDeliveryRequest(deliveries.First().DeliveryId),
+                CancellationToken.None);
+
             // Assert
             actual.Succeed.Should().BeTrue();
-
         }
-        
+
         [Fact]
         public async Task Should_Handle_ReturnErrorWithResourceNotFoundReason_WhenTheDeliveryIdIsNotExist()
         {
@@ -43,16 +43,16 @@ namespace Glue.Delivery.Core.UnitTests
             var dbContext = new Mock<DeliveryDbContext>();
             dbContext.Setup(x => x.Deliveries).ReturnsDbSet(deliveries);
             var logger = new Mock<ILogger<DeleteDeliveryRequestHandler>>();
-            var sut = new DeleteDeliveryRequestHandler(dbContext.Object, logger.Object );
+            var sut = new DeleteDeliveryRequestHandler(dbContext.Object, logger.Object);
 
             // Act
             var actual = await sut.Handle(new DeleteDeliveryRequest(new Guid()), CancellationToken.None);
-            
+
             // Assert
             actual.Failed.Should().BeTrue();
             actual.ErrorReason.Should().Be(OperationErrorReason.ResourceNotFound);
         }
-        
+
         [Fact]
         public async Task Should_Handle_ReturnErrorWithGenericErrorReason_WhenExceptionHappened()
         {
@@ -64,10 +64,10 @@ namespace Glue.Delivery.Core.UnitTests
 
             // Act
             var actual = await sut.Handle(new DeleteDeliveryRequest(new Guid()), CancellationToken.None);
-            
+
             // Assert
             actual.Failed.Should().BeTrue();
             actual.ErrorReason.Should().Be(OperationErrorReason.GenericError);
-        } 
+        }
     }
 }

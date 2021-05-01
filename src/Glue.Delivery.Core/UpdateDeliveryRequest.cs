@@ -7,13 +7,13 @@ namespace Glue.Delivery.Core
 {
     public sealed class UpdateDeliveryRequest : IRequest<OperationResult<OrderDeliveryDto>>
     {
-        public Guid DeliveryId { get; }
-        public DeliveryRequestDto DeliveryRequestDto { get; }
-
         public UpdateDeliveryRequest(Guid deliveryId, DeliveryRequestDto deliveryRequestDto)
         {
             DeliveryId = deliveryId;
             DeliveryRequestDto = deliveryRequestDto ?? throw new ArgumentNullException(nameof(deliveryRequestDto));
         }
+
+        public Guid DeliveryId { get; }
+        public DeliveryRequestDto DeliveryRequestDto { get; }
     }
-}   
+}

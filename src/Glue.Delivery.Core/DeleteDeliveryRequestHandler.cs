@@ -33,7 +33,7 @@ namespace Glue.Delivery.Core
             {
                 var orderDelivery =
                     await _dbContext.Deliveries.FirstOrDefaultAsync(x => x.DeliveryId == request.DeliveryId,
-                        cancellationToken: cancellationToken);
+                        cancellationToken);
                 if (orderDelivery == null)
                     return OperationResult<Unit>.Error(OperationErrorReason.ResourceNotFound,
                         $"The deliveryRequest not found for Id {request.DeliveryId}");

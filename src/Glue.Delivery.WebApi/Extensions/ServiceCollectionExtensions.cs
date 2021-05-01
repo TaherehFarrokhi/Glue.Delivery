@@ -18,6 +18,5 @@ namespace Glue.Delivery.WebApi.Extensions
 
             return services;
         }
-        
     }
 }

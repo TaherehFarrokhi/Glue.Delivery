@@ -1,18 +1,17 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using AutoMapper;
-using Glue.Delivery.Core;
 using Glue.Delivery.Core.Dto;
 using Glue.Delivery.Core.Profiles;
 using Glue.Delivery.Core.Stores;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace Glue.Delivery.WebApi
 {
@@ -39,20 +38,16 @@ namespace Glue.Delivery.WebApi
             services.AddMediatR(typeof(OrderDeliveryDto));
             services
                 .AddEntityFrameworkInMemoryDatabase()
-                .AddDbContext<DeliveryDbContext>((sp, options) =>
-                {
-                    options.UseInMemoryDatabase("DeliveryDB").UseInternalServiceProvider(sp);
-                }, ServiceLifetime.Singleton);
+                .AddDbContext<DeliveryDbContext>(
+                    (sp, options) => { options.UseInMemoryDatabase("DeliveryDB").UseInternalServiceProvider(sp); },
+                    ServiceLifetime.Singleton);
 
             services.AddSingleton(new MapperConfiguration(m => m.AddProfile<DeliveryProfile>()).CreateMapper());
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
+            if (env.IsDevelopment()) app.UseDeveloperExceptionPage();
 
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Glue.Delivery.API v1"));
