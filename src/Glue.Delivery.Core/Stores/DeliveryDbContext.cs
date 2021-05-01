@@ -19,5 +19,6 @@ namespace Glue.Delivery.Core.Stores
             modelBuilder.Entity<OrderDelivery>().OwnsOne(m => m.AccessWindow);
             modelBuilder.Entity<OrderDelivery>().OwnsOne(m => m.Recipient);
         }
+        public virtual DbSet<OrderDelivery> Deliveries { get; set; }
     }
 }

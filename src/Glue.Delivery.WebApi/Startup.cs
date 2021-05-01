@@ -42,7 +42,7 @@ namespace Glue.Delivery.WebApi
                 .AddDbContext<DeliveryDbContext>((sp, options) =>
                 {
                     options.UseInMemoryDatabase("DeliveryDB").UseInternalServiceProvider(sp);
-                });
+                }, ServiceLifetime.Singleton);
 
             services.AddSingleton(new MapperConfiguration(m => m.AddProfile<DeliveryProfile>()).CreateMapper());
         }

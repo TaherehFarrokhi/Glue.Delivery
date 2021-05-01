@@ -29,15 +29,15 @@ namespace Glue.Delivery.Core
         {
             if (request == null) throw new ArgumentNullException(nameof(request));
 
-            var orderNumber = request.DeliveryDto?.Order?.OrderNumber;
+            var orderNumber = request.DeliveryRequestDto?.Order?.OrderNumber;
             
-            _logger.LogInformation($"Create delivery for order {orderNumber}");
+            _logger.LogInformation($"Create deliveryRequest for order {orderNumber}");
 
             try
             {
-                var orderDelivery = _mapper.Map<OrderDelivery>(request.DeliveryDto);
+                var orderDelivery = _mapper.Map<OrderDelivery>(request.DeliveryRequestDto);
             
-                _dbContext.Set<OrderDelivery>().Add(orderDelivery);
+                _dbContext.Deliveries.Add(orderDelivery);
                 await _dbContext.SaveChangesAsync(cancellationToken);
                 
                 _logger.LogInformation($"Delivery for {orderNumber} has been created successfully");
@@ -47,7 +47,7 @@ namespace Glue.Delivery.Core
             }
             catch (Exception e)
             {
-                var message = $"Error in creating the delivery for order {orderNumber}";
+                var message = $"Error in creating the deliveryRequest for order {orderNumber}";
                 
                 _logger.LogError(message, e);
                 return OperationResult<OrderDeliveryDto>.Error(message);

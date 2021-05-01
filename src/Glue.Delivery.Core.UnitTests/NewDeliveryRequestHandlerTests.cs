@@ -16,7 +16,7 @@ namespace Glue.Delivery.Core.UnitTests
         public async Task Should_Handle_ReturnTheDelivery_WhenTheDeliveryIdIsValid()
         {
             // Arrange
-            var delivery = _fixture.Create<NewDeliveryDto>();
+            var delivery = _fixture.Create<DeliveryRequestDto>();
             var sut = new NewDeliveryRequestHandler(null, null, null);
 
             // Act

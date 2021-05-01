@@ -8,7 +8,7 @@ namespace Glue.Delivery.Core.Profiles
     {
         public DeliveryProfile()
         {
-            CreateMap<NewDeliveryDto, OrderDelivery>(MemberList.Source);
+            CreateMap<DeliveryRequestDto, OrderDelivery>(MemberList.Source);
             CreateMap<OrderDto, Order>(MemberList.Destination).ReverseMap();
             CreateMap<AccessWindowDto, AccessWindow>(MemberList.Destination).ReverseMap();
             CreateMap<RecipientDto, Recipient>(MemberList.Destination).ReverseMap();

@@ -64,7 +64,7 @@ namespace Glue.Delivery.WebApi.IntegrationTests
         {
             // Arrange
             var client = _factory.CreateClient();
-            var delivery = _fixture.Create<NewDeliveryDto>();
+            var delivery = _fixture.Create<DeliveryRequestDto>();
             var context = _factory.Server.Services.GetRequiredService<DeliveryDbContext>();
             var httpContent = new StringContent(JsonConvert.SerializeObject(delivery), Encoding.UTF8, MediaTypeNames.Application.Json);
 
@@ -89,6 +89,56 @@ namespace Glue.Delivery.WebApi.IntegrationTests
             persisted.DeliveryId.Should().Be(actual.DeliveryId);
 
             response.Headers.Location?.AbsoluteUri.EndsWith($"deliveries/{actual.DeliveryId}", StringComparison.CurrentCultureIgnoreCase).Should().BeTrue();
-        }  
+        }
+        
+        [Fact]
+        public async Task Should_Put_UpdateAndReturnUpdatedDeliveryCorrectly_WhenThePayloadIsValidAndDeliveryExists()
+        {
+            // Arrange
+            var client = _factory.CreateClient();
+            var delivery = _fixture.Create<OrderDelivery>();
+            var context = _factory.Server.Services.GetRequiredService<DeliveryDbContext>();
+            context.Add(delivery);
+            await context.SaveChangesAsync();
+            
+            var updatedDelivery = _fixture.Create<DeliveryRequestDto>();
+            var httpContent = new StringContent(JsonConvert.SerializeObject(updatedDelivery), Encoding.UTF8, MediaTypeNames.Application.Json);
+
+            // Act
+            var response = await client.PutAsync($"deliveries/{delivery.DeliveryId}", httpContent);
+        
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+            
+            var actual = await response.ValidateAndReadContentAsync<OrderDeliveryDto>();
+            var persisted = await context.Set<OrderDelivery>().FindAsync(actual.DeliveryId);
+            
+            actual.Order.Should().BeEquivalentTo(updatedDelivery.Order);
+            actual.Recipient.Should().BeEquivalentTo(updatedDelivery.Recipient);
+            actual.AccessWindow.Should().BeEquivalentTo(updatedDelivery.AccessWindow);
+            actual.State.Should().Be(DeliveryState.Created);            
+            
+            persisted.Order.Should().BeEquivalentTo(updatedDelivery.Order);
+            persisted.Recipient.Should().BeEquivalentTo(updatedDelivery.Recipient);
+            persisted.AccessWindow.Should().BeEquivalentTo(updatedDelivery.AccessWindow);
+            persisted.State.Should().Be(DeliveryState.Created);
+
+            response.Headers.Location?.AbsoluteUri.EndsWith($"deliveries/{actual.DeliveryId}", StringComparison.CurrentCultureIgnoreCase).Should().BeTrue();
+        }
+        
+        [Fact]
+        public async Task Should_Put_ReturnsNotFound_WhenDeliveryIsNotExist()
+        {
+            // Arrange
+            var client = _factory.CreateClient();
+            var updatedDelivery = _fixture.Create<DeliveryRequestDto>();
+            var httpContent = new StringContent(JsonConvert.SerializeObject(updatedDelivery), Encoding.UTF8, MediaTypeNames.Application.Json);
+
+            // Act
+            var response = await client.PutAsync($"deliveries/{Guid.NewGuid()}", httpContent);
+        
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+         }  
     }
 }

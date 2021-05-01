@@ -1,6 +1,6 @@
 ﻿namespace Glue.Delivery.Core.Dto
 {
-    public sealed class NewDeliveryDto
+    public sealed class DeliveryRequestDto
     {
         public AccessWindowDto AccessWindow { get; init; }
         public RecipientDto Recipient { get; init; }

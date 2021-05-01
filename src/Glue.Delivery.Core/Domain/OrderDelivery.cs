@@ -4,10 +4,10 @@ namespace Glue.Delivery.Core.Domain
 {
     public sealed class OrderDelivery
     {
-        public Guid DeliveryId { get; init; } = Guid.NewGuid();
+        public Guid DeliveryId { get; set; } = Guid.NewGuid();
         public DeliveryState State { get; set; } = DeliveryState.Created;
-        public AccessWindow AccessWindow { get; init; }
-        public Recipient Recipient { get; init; }
-        public Order Order { get; init; }
+        public AccessWindow AccessWindow { get; set; }
+        public Recipient Recipient { get; set; }
+        public Order Order { get; set; }
     }
 }

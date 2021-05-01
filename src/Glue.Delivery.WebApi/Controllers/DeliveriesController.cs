@@ -19,27 +19,43 @@ namespace Glue.Delivery.WebApi.Controllers
         {
             _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
-        
+
         [HttpGet("{deliveryId:guid}")]
         public async Task<ActionResult<OrderDeliveryDto>> Get(Guid deliveryId)
         {
             var response = await _mediator.Send(new GetDeliveryRequest(deliveryId));
-            if (!response.Failed) 
+            if (!response.Failed)
                 return Ok(response.Result);
-            return response.ErrorReason == OperationErrorReason.ResourceNotFound ? NotFound() : StatusCode(StatusCodes.Status500InternalServerError);
-        }                 
-        
+            return response.ErrorReason == OperationErrorReason.ResourceNotFound
+                ? NotFound()
+                : StatusCode(StatusCodes.Status500InternalServerError);
+        }
+
         [HttpPost("")]
-        public async Task<ActionResult<OrderDeliveryDto>> Post([FromBody] NewDeliveryDto delivery)
+        public async Task<ActionResult<OrderDeliveryDto>> Post([FromBody] DeliveryRequestDto deliveryRequest)
         {
-            var response = await _mediator.Send(new NewDeliveryRequest(delivery));
+            var response = await _mediator.Send(new NewDeliveryRequest(deliveryRequest));
             if (response.Failed)
                 return BadRequest();
 
-            return CreatedAtAction(nameof(Get), new { deliveryId = response.Result.DeliveryId}, response.Result);
-        }         
+            return CreatedAtAction(nameof(Get), new {deliveryId = response.Result.DeliveryId}, response.Result);
+        }
+
+        [HttpPut("{deliveryId:guid}")]
+        public async Task<ActionResult<OrderDeliveryDto>> Put([FromRoute] Guid deliveryId,
+            [FromBody] DeliveryRequestDto deliveryRequest)
+        {
+            var response = await _mediator.Send(new UpdateDeliveryRequest(deliveryId, deliveryRequest));
+            
+            if (!response.Failed)
+                return Ok(response.Result);
+            
+            return response.ErrorReason == OperationErrorReason.ResourceNotFound
+                ? NotFound()
+                : StatusCode(StatusCodes.Status500InternalServerError);
+        }
         
-        // [HttpPut("{orderId}/delivery/{action}")]
+        // [HttpPut("{orderId}/deliveryRequest/{action}")]
         // public async Task<ActionResult<OrderDelivery>> Put(string orderId, DeliveryAction action)
         // {
         //     var result = await _mediator.Send(new DeliveryChangeStateRequest(orderId, action));
