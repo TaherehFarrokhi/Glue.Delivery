@@ -34,7 +34,7 @@ namespace Glue.Delivery.Core
 
             try
             {
-                var orderDelivery = await _dbContext.Set<OrderDelivery>().FirstOrDefaultAsync(x=>x.DeliveryId == request.DeliveryId);
+                var orderDelivery = await _dbContext.Deliveries.FirstOrDefaultAsync(x=>x.DeliveryId == request.DeliveryId);
                 if (orderDelivery == null) 
                     return OperationResult<OrderDeliveryDto>.Error(OperationErrorReason.ResourceNotFound, $"The deliveryRequest not found for Id {request.DeliveryId}");
                 

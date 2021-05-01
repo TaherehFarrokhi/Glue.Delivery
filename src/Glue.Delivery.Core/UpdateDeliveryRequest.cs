@@ -16,4 +16,4 @@ namespace Glue.Delivery.Core
             DeliveryRequestDto = deliveryRequestDto ?? throw new ArgumentNullException(nameof(deliveryRequestDto));
         }
     }
-}
+}   

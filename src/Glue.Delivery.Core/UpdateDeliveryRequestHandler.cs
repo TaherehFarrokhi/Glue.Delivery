@@ -16,9 +16,9 @@ namespace Glue.Delivery.Core
     {
         private readonly DeliveryDbContext _dbContext;
         private readonly IMapper _mapper;
-        private readonly ILogger<NewDeliveryRequestHandler> _logger;
+        private readonly ILogger<UpdateDeliveryRequestHandler> _logger;
 
-        public UpdateDeliveryRequestHandler(DeliveryDbContext dbContext, IMapper mapper, ILogger<NewDeliveryRequestHandler> logger)
+        public UpdateDeliveryRequestHandler(DeliveryDbContext dbContext, IMapper mapper, ILogger<UpdateDeliveryRequestHandler> logger)
         {
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
@@ -34,8 +34,8 @@ namespace Glue.Delivery.Core
 
             try
             {
-                var orderDelivery = await _dbContext.Set<OrderDelivery>()
-                    .FirstOrDefaultAsync(x=> x.DeliveryId == request.DeliveryId);
+                var orderDelivery = await _dbContext.Deliveries
+                    .FirstOrDefaultAsync(x=> x.DeliveryId == request.DeliveryId, cancellationToken: cancellationToken);
                 if (orderDelivery == null) 
                     return OperationResult<OrderDeliveryDto>.Error(OperationErrorReason.ResourceNotFound, $"The deliveryRequest not found for Id {request.DeliveryId}");
                 

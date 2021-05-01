@@ -55,6 +55,19 @@ namespace Glue.Delivery.WebApi.Controllers
                 : StatusCode(StatusCodes.Status500InternalServerError);
         }
         
+        [HttpDelete("{deliveryId:guid}")]
+        public async Task<ActionResult<OrderDeliveryDto>> Delete([FromRoute] Guid deliveryId)
+        {
+            var response = await _mediator.Send(new DeleteDeliveryRequest(deliveryId));
+            
+            if (!response.Failed)
+                return Ok();
+            
+            return response.ErrorReason == OperationErrorReason.ResourceNotFound
+                ? NotFound()
+                : StatusCode(StatusCodes.Status500InternalServerError);
+        }
+        
         // [HttpPut("{orderId}/deliveryRequest/{action}")]
         // public async Task<ActionResult<OrderDelivery>> Put(string orderId, DeliveryAction action)
         // {

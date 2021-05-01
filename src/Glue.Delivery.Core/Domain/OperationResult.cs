@@ -11,14 +11,13 @@ namespace Glue.Delivery.Core.Domain
         public OperationErrorReason ErrorReason { get; private set; } = OperationErrorReason.None;
         public bool Succeed => !Failed;
         private OperationResult() { }
-
         public static OperationResult<T> Success(T result)
         {
             if (result == null) throw new ArgumentNullException(nameof(result));
             
             return new OperationResult<T> {Result = result, Failed = false};
-        }        
-        
+        }
+
         public static OperationResult<T> Error(string errorMessage)
         {
             return Error(OperationErrorReason.GenericError, errorMessage);
