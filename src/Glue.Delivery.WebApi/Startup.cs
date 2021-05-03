@@ -2,10 +2,10 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using AutoMapper;
 using Coravel;
-using Glue.Delivery.Core;
 using Glue.Delivery.Core.Dto;
 using Glue.Delivery.Core.Handlers;
 using Glue.Delivery.Core.Profiles;
+using Glue.Delivery.Core.Rules;
 using Glue.Delivery.Core.Stores;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
@@ -47,6 +47,11 @@ namespace Glue.Delivery.WebApi
                     ServiceLifetime.Singleton);
 
             services.AddSingleton(new MapperConfiguration(m => m.AddProfile<DeliveryProfile>()).CreateMapper());
+            services.AddTransient<IStateRuleEngine, StateRuleEngine>();
+            services.AddTransient<IStateRule, ApproveStateRule>();
+            services.AddTransient<IStateRule, CancelStateRule>();
+            services.AddTransient<IStateRule, CompleteStateRule>();
+            
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

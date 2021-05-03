@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Glue.Delivery.Core;
 using Glue.Delivery.Core.Domain;
 using Glue.Delivery.Core.Dto;
 using Glue.Delivery.Core.Handlers;
@@ -57,7 +56,7 @@ namespace Glue.Delivery.WebApi.Controllers
         }
 
         [HttpDelete("{deliveryId:guid}")]
-        public async Task<ActionResult<OrderDeliveryDto>> Delete([FromRoute] Guid deliveryId)
+        public async Task<ActionResult> Delete([FromRoute] Guid deliveryId)
         {
             var response = await _mediator.Send(new DeleteDeliveryRequest(deliveryId));
 
@@ -69,11 +68,23 @@ namespace Glue.Delivery.WebApi.Controllers
                 : StatusCode(StatusCodes.Status500InternalServerError);
         }
 
-        // [HttpPut("{orderId}/deliveryRequest/{action}")]
-        // public async Task<ActionResult<OrderDelivery>> Put(string orderId, DeliveryAction action)
-        // {
-        //     var result = await _mediator.Send(new DeliveryChangeStateRequest(orderId, action));
-        //     return result.ToActionResult();
-        // } 
+        [HttpPost("{deliveryId:guid}/state")]
+        public async Task<ActionResult> ChangeDeliveryState(
+            [FromRoute] Guid deliveryId, [FromQuery] DeliveryAction action, [FromHeader(Name = "role")] RequesterRole? role)
+        {
+            if (role == null)
+                return Unauthorized("Role should be defined in header. Values: User | Partner");
+            
+            var response = await _mediator.Send(new ChangeDeliveryStateRequest(deliveryId, action, role.Value));
+            if (!response.Failed)
+                return Ok();
+
+            return response.ErrorReason switch
+            {
+                OperationErrorReason.ResourceNotFound => NotFound(),
+                OperationErrorReason.InvalidOperation => Conflict(),
+                _ => StatusCode(StatusCodes.Status500InternalServerError)
+            };
+        } 
     }
 }
