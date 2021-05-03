@@ -1,6 +1,7 @@
 using System;
 using System.Net;
 using System.Net.Http;
+using System.Net.Mail;
 using System.Net.Mime;
 using System.Text;
 using System.Threading.Tasks;
@@ -25,6 +26,10 @@ namespace Glue.Delivery.WebApi.IntegrationTests
         public DeliveriesControllerTests(ApplicationFactory factory)
         {
             _factory = factory;
+            _fixture.Customize<RecipientDto>(c => c.With(x => x.Email, _fixture.Create<MailAddress>().Address));
+            _fixture.Customize<AccessWindowDto>(c => c
+                .With(x => x.EndTime, DateTime.Today.AddDays(-2))
+                .With(x => x.StartTime, DateTime.Today.AddDays(-3)));
         }
 
         [Fact]
