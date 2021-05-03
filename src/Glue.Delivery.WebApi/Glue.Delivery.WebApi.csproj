@@ -18,8 +18,4 @@
       <ProjectReference Include="..\Glue.Delivery.Core\Glue.Delivery.Core.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Validators" />
-    </ItemGroup>
-
 </Project>

@@ -2,11 +2,14 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using AutoMapper;
 using Coravel;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Glue.Delivery.Core.Dto;
 using Glue.Delivery.Core.Handlers;
 using Glue.Delivery.Core.Profiles;
 using Glue.Delivery.Core.Rules;
 using Glue.Delivery.Core.Stores;
+using Glue.Delivery.WebApi.Validators;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -32,7 +35,7 @@ namespace Glue.Delivery.WebApi
             services.AddControllers().AddJsonOptions(opts =>
             {
                 opts.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
-            });
+            }).AddFluentValidation();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo {Title = "Glue.Delivery.API", Version = "v1"});
@@ -51,6 +54,7 @@ namespace Glue.Delivery.WebApi
             services.AddTransient<IStateRule, ApproveStateRule>();
             services.AddTransient<IStateRule, CancelStateRule>();
             services.AddTransient<IStateRule, CompleteStateRule>();
+            services.AddTransient<IValidator<DeliveryRequestDto>, DeliveryRequestValidator>();
             
         }
 
