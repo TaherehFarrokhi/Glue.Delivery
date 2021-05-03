@@ -12,7 +12,7 @@ namespace Glue.Delivery.Core.Rules
                           context.OrderDelivery.State == DeliveryState.Created &&
                           context.RequesterRole == RequesterRole.User;
             
-            return (allowed, DeliveryState.Approved);
+            return (allowed, allowed ? DeliveryState.Approved: null);
         }
     }
 }

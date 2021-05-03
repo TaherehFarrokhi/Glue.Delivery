@@ -11,7 +11,7 @@ namespace Glue.Delivery.Core.Rules
             var allowed = action == DeliveryAction.Complete &&
                           context.OrderDelivery.State == DeliveryState.Approved &&
                           context.RequesterRole == RequesterRole.Partner;
-            return (allowed, DeliveryState.Completed);
+            return (allowed, allowed ? DeliveryState.Completed: null);
         }
     }
 }

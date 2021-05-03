@@ -3,8 +3,10 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
+using AutoMapper;
 using FluentAssertions;
 using Glue.Delivery.Core.Domain;
+using Glue.Delivery.Core.Dto;
 using Glue.Delivery.Core.Handlers;
 using Glue.Delivery.Core.Stores;
 using Microsoft.Extensions.Logging;
@@ -12,9 +14,9 @@ using Moq;
 using Moq.EntityFrameworkCore;
 using Xunit;
 
-namespace Glue.Delivery.Core.UnitTests
+namespace Glue.Delivery.Core.UnitTests.Handlers
 {
-    public class DeleteDeliveryRequestHandlerTests
+    public class GetDeliveryRequestHandlerTests
     {
         private readonly Fixture _fixture = new();
 
@@ -25,11 +27,13 @@ namespace Glue.Delivery.Core.UnitTests
             var deliveries = _fixture.CreateMany<OrderDelivery>().ToList();
             var dbContext = new Mock<DeliveryDbContext>();
             dbContext.Setup(x => x.Deliveries).ReturnsDbSet(deliveries);
-            var logger = new Mock<ILogger<DeleteDeliveryRequestHandler>>();
-            var sut = new DeleteDeliveryRequestHandler(dbContext.Object, logger.Object);
+            var mapper = new Mock<IMapper>();
+            mapper.Setup(x => x.Map<OrderDeliveryDto>(deliveries.First())).Returns(new OrderDeliveryDto());
+            var logger = new Mock<ILogger<NewDeliveryRequestHandler>>();
+            var sut = new GetDeliveryRequestHandler(dbContext.Object, mapper.Object, logger.Object);
 
             // Act
-            var actual = await sut.Handle(new DeleteDeliveryRequest(deliveries.First().DeliveryId),
+            var actual = await sut.Handle(new GetDeliveryRequest(deliveries.First().DeliveryId),
                 CancellationToken.None);
 
             // Assert
@@ -43,11 +47,12 @@ namespace Glue.Delivery.Core.UnitTests
             var deliveries = _fixture.CreateMany<OrderDelivery>();
             var dbContext = new Mock<DeliveryDbContext>();
             dbContext.Setup(x => x.Deliveries).ReturnsDbSet(deliveries);
-            var logger = new Mock<ILogger<DeleteDeliveryRequestHandler>>();
-            var sut = new DeleteDeliveryRequestHandler(dbContext.Object, logger.Object);
+            var mapper = new Mock<IMapper>();
+            var logger = new Mock<ILogger<NewDeliveryRequestHandler>>();
+            var sut = new GetDeliveryRequestHandler(dbContext.Object, mapper.Object, logger.Object);
 
             // Act
-            var actual = await sut.Handle(new DeleteDeliveryRequest(new Guid()), CancellationToken.None);
+            var actual = await sut.Handle(new GetDeliveryRequest(new Guid()), CancellationToken.None);
 
             // Assert
             actual.Failed.Should().BeTrue();
@@ -60,11 +65,12 @@ namespace Glue.Delivery.Core.UnitTests
             // Arrange
             var dbContext = new Mock<DeliveryDbContext>();
             dbContext.Setup(x => x.Deliveries).Throws(new Exception());
-            var logger = new Mock<ILogger<DeleteDeliveryRequestHandler>>();
-            var sut = new DeleteDeliveryRequestHandler(dbContext.Object, logger.Object);
+            var mapper = new Mock<IMapper>();
+            var logger = new Mock<ILogger<NewDeliveryRequestHandler>>();
+            var sut = new GetDeliveryRequestHandler(dbContext.Object, mapper.Object, logger.Object);
 
             // Act
-            var actual = await sut.Handle(new DeleteDeliveryRequest(new Guid()), CancellationToken.None);
+            var actual = await sut.Handle(new GetDeliveryRequest(new Guid()), CancellationToken.None);
 
             // Assert
             actual.Failed.Should().BeTrue();

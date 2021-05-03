@@ -12,7 +12,7 @@ using Moq;
 using Moq.EntityFrameworkCore;
 using Xunit;
 
-namespace Glue.Delivery.Core.UnitTests
+namespace Glue.Delivery.Core.UnitTests.Handlers
 {
     public class ExpireDeliveryRequestHandlerTests
     {

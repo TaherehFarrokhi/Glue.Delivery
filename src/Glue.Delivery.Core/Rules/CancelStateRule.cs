@@ -13,7 +13,7 @@ namespace Glue.Delivery.Core.Rules
         {
             var allowed = action == DeliveryAction.Cancel && 
                           _allowedStates.Contains(context.OrderDelivery.State);
-            return (allowed, DeliveryState.Cancelled);
+            return (allowed, allowed ? DeliveryState.Cancelled : null);
         }
     }
 }
